@@ -164,4 +164,4 @@ joinwitness run audit.json --force
 
 pandas 已提供连接关系验证和来源标记，qsv 提供更完整的 CSV 连接命令，getchatdata 也有本地连接预检工具。JoinWitness 侧重可离线审阅的报告、重复运行的配置和明确的质量策略，不宣称首创。详见[基于原始文档的对比](COMPARISON.md)。
 
-开发贡献请参阅 [CONTRIBUTING.md](../CONTRIBUTING.md)。许可证见 [LICENSE](../LICENSE)。配置了 Windows CI 工作流不代表已在 Windows 上实际运行测试。
+开发贡献请参阅 [CONTRIBUTING.md](../CONTRIBUTING.md)。许可证见 [LICENSE](../LICENSE)。已完成的跨平台测试见[验证记录](VERIFICATION.md)，最新状态见 [GitHub Actions](https://github.com/loaff123/joinwitness/actions)。

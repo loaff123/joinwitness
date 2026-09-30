@@ -185,6 +185,6 @@ Runtime auditing is local, with no telemetry, hosted backend, or network calls. 
 
 ## Development and release status
 
-See [Contributing](CONTRIBUTING.md) for checks and fixtures, and [Changelog](CHANGELOG.md) for release scope. A configured Windows CI job is not evidence that Windows tests have run. Release evidence should identify the actual platform and commands used.
+See [Contributing](CONTRIBUTING.md) for checks and fixtures, and [Changelog](CHANGELOG.md) for release scope. See [verification evidence](docs/VERIFICATION.md) and [GitHub Actions](https://github.com/loaff123/joinwitness/actions) for actual platform checks.
 
 JoinWitness is licensed under [MIT](LICENSE).

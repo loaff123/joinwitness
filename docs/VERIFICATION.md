@@ -15,9 +15,19 @@ Environment: Linux x86_64, Python 3.12.14.
 - Wheel and source-distribution builds; wheel installation in a fresh virtual environment outside the source directory; installed CLI help and computed demo
 - Scale checks reported separately in [benchmark results](../benchmarks/RESULTS.md), including a 10-billion-row prediction without constructing those rows
 
+## Hosted CI evidence
+
+On 2026-09-30, [GitHub Actions run 36720464785](https://github.com/loaff123/joinwitness/actions/runs/36720464785) passed all six jobs for source-release commit `dde7b82ece37d96019339f5255a005a64a501545`:
+
+- Ubuntu and Windows, each on Python 3.10, 3.12, and 3.13
+- Full tests, Ruff, strict mypy, source/wheel builds, and independent wheel installation with CLI help and demo
+- The Ubuntu/Python 3.12 job uploaded the built distributions as a workflow artifact
+
+This is evidence for that exact commit. Consult the [Actions page](https://github.com/loaff123/joinwitness/actions) for later commits.
+
 ## Not verified here
 
-- Windows/macOS execution. CI is configured for Ubuntu and Windows, Python 3.10/3.12/3.13, but no hosted CI runs have occurred
+- macOS execution
 - Actual browser screenshots or visual layout inspection. Headless Chromium cannot create its singleton socket in this execution environment; the cloud browser rejects local file/loopback previews. Template behavior and privacy are tested, but desktop/mobile visual QA remains a release check
 - External security audit, trademark clearance, public package-name reservation, performance on user datasets, or arbitrarily large distinct-key inputs
 
@@ -31,4 +41,4 @@ python -m mypy src/joinwitness
 python -m build
 ```
 
-Open `examples/demo/report.html` in a desktop and mobile browser before public launch. Review default reports separately from opt-in sample reports. Reports are exact for the input state actually read; do not modify input files during an audit.
+For visual review, open `examples/demo/report.html` in a desktop and mobile browser. Review default reports separately from opt-in sample reports. Reports are exact for the input state actually read; do not modify input files during an audit.
