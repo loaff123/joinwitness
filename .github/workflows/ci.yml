@@ -1,0 +1,42 @@
+name: Test and package
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  tests:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ['3.10', '3.12', '3.13']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+      - run: python -m pip install -e ".[dev]"
+      - run: python -m pytest
+      - run: python -m ruff check .
+      - run: python -m mypy src/joinwitness
+      - run: python -m build
+      - name: Test wheel independently of the checkout
+        shell: python
+        run: |
+          import pathlib, subprocess, sys, tempfile, venv
+          wheel = next(pathlib.Path('dist').glob('*.whl')).resolve()
+          with tempfile.TemporaryDirectory() as tmp:
+              root = pathlib.Path(tmp)
+              venv.create(root / 'env', with_pip=True)
+              binary = root / 'env' / ('Scripts/python.exe' if sys.platform == 'win32' else 'bin/python')
+              subprocess.run([str(binary), '-m', 'pip', 'install', str(wheel)], check=True)
+              subprocess.run([str(binary), '-m', 'joinwitness', '--help'], cwd=root, check=True)
+              subprocess.run([str(binary), '-m', 'joinwitness', 'demo'], cwd=root, check=True)
+      - uses: actions/upload-artifact@v4
+        if: matrix.os == 'ubuntu-latest' && matrix.python == '3.12'
+        with:
+          name: python-distributions
+          path: dist/*

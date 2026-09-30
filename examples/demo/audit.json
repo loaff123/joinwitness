@@ -1,0 +1,22 @@
+{
+  "amount_column": "amount",
+  "delimiter": ",",
+  "fail_on_expansion": false,
+  "fail_on_unmatched": false,
+  "join_type": "left",
+  "left": "orders.csv",
+  "left_keys": [
+    "customer_id"
+  ],
+  "max_output_rows": null,
+  "null_values": [
+    ""
+  ],
+  "relationship": "many-to-one",
+  "right": "customers.csv",
+  "right_keys": [
+    "customer_id"
+  ],
+  "sample_limit": 0,
+  "schema_version": 1
+}

@@ -1,0 +1,39 @@
+{
+  "logical_cpus_visible": 9,
+  "machine": "x86_64",
+  "method": "Fresh process per repeat; generate files before timer; time audit only; warm OS cache possible; RSS includes interpreter/imports; no cross-product materialized.",
+  "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "python": "3.12.14",
+  "runs": [
+    {
+      "amount_enabled": false,
+      "distinct_keys_per_input": 1,
+      "elapsed_seconds": 1.202888,
+      "peak_process_rss_mib": 12.75,
+      "predicted_rows": 10000000000,
+      "rows_per_input": 100000,
+      "total_input_bytes": 3200020,
+      "verified_expected_rows": 10000000000
+    },
+    {
+      "amount_enabled": false,
+      "distinct_keys_per_input": 1,
+      "elapsed_seconds": 3.167604,
+      "peak_process_rss_mib": 12.75,
+      "predicted_rows": 10000000000,
+      "rows_per_input": 100000,
+      "total_input_bytes": 3200020,
+      "verified_expected_rows": 10000000000
+    },
+    {
+      "amount_enabled": false,
+      "distinct_keys_per_input": 1,
+      "elapsed_seconds": 0.938553,
+      "peak_process_rss_mib": 12.75,
+      "predicted_rows": 10000000000,
+      "rows_per_input": 100000,
+      "total_input_bytes": 3200020,
+      "verified_expected_rows": 10000000000
+    }
+  ]
+}

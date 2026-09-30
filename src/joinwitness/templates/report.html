@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; object-src 'none'">
+  <meta name="color-scheme" content="light">
+  <title>JoinWitness · Join preflight report</title>
+  <style>
+    :root { --paper:#f6f4ed; --card:#fffefa; --ink:#142c36; --muted:#52646a; --line:#d9dfd9; --teal:#12685f; --teal-soft:#e8f2eb; --orange:#a6431e; --orange-soft:#faeee4; --navy:#132e38; --mono:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:auto; }
+    body { margin:0; background:var(--paper); color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; font-size:15px; line-height:1.55; -webkit-font-smoothing:antialiased; }
+    a { color:inherit; text-underline-offset:4px; }
+    a:focus-visible { outline:3px solid var(--teal); outline-offset:5px; border-radius:2px; }
+    .skip { position:absolute; top:8px; left:8px; transform:translateY(-160%); background:var(--card); padding:10px 16px; z-index:5; }
+    .skip:focus { transform:none; }
+    .shell { width:min(1120px,calc(100% - 64px)); margin:0 auto; }
+    .masthead { display:flex; justify-content:space-between; align-items:center; gap:20px; padding:25px 0; border-bottom:1px solid var(--line); }
+    .brand { display:flex; align-items:center; gap:10px; font-size:18px; font-weight:750; letter-spacing:-.6px; }
+    .brandmark { display:flex; gap:3px; align-items:center; justify-content:center; width:30px; height:30px; background:var(--ink); border-radius:7px; }
+    .brandmark i { display:block; width:6px; height:14px; border:1.5px solid #f6f4ed; border-radius:3px; transform:rotate(-22deg); }
+    .brandmark i:last-child { border-color:#eda97b; }
+    .masthead-right { display:flex; gap:18px; align-items:center; }
+    .micro { font-family:var(--mono); font-size:10px; line-height:1.5; font-weight:500; text-transform:uppercase; letter-spacing:1.6px; }
+    .quiet { color:var(--muted); }
+    .badge { display:inline-flex; align-items:center; gap:7px; padding:6px 10px; font-size:11px; line-height:1.35; border:1px solid var(--line); border-radius:100px; white-space:nowrap; }
+    .dot { width:6px; height:6px; border-radius:50%; background:currentColor; flex-shrink:0; }
+    .badge-private { color:var(--teal); border-color:#b8d0c6; background:var(--teal-soft); }
+    .badge-samples { color:var(--orange); border-color:#e6c3a8; background:var(--orange-soft); }
+    .hero { display:grid; grid-template-columns:1.04fr 1fr; gap:64px; padding:66px 0 48px; align-items:center; }
+    .eyebrow { color:var(--teal); margin:0 0 16px; }
+    h1 { margin:0; font-family:Georgia,"Times New Roman",serif; font-size:clamp(42px,5.2vw,66px); font-weight:400; line-height:1.04; letter-spacing:-2.8px; }
+    .hero-copy { max-width:380px; margin:20px 0 24px; color:var(--muted); font-size:16px; line-height:1.7; }
+    .config { display:flex; flex-wrap:wrap; gap:8px; }
+    .config span { font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:.65px; border:1px solid #cbd3ce; padding:6px 9px; border-radius:3px; }
+    .verdict { position:relative; border:1px solid var(--line); border-top:3px solid var(--orange); background:var(--card); padding:26px 28px 22px; border-radius:3px 3px 12px 12px; }
+    .verdict.pass { border-top-color:var(--teal); }
+    .verdict-label { display:flex; align-items:center; gap:7px; color:var(--orange); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1.2px; }
+    .verdict.pass .verdict-label { color:var(--teal); }
+    .verdict h2 { font-size:24px; letter-spacing:-.8px; line-height:1.25; margin:13px 0 10px; }
+    .verdict p { color:var(--muted); font-size:13px; margin:0; }
+    .rule-count { display:flex; align-items:baseline; gap:9px; border-top:1px solid var(--line); margin-top:20px; padding-top:16px; }
+    .rule-count strong { font-family:var(--mono); font-size:23px; font-weight:500; }
+    .rule-count span { font-size:12px; color:var(--muted); }
+    .section-nav { display:flex; flex-wrap:wrap; gap:24px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding:14px 0; margin-bottom:38px; }
+    .section-nav a { text-decoration:none; font-size:11px; color:var(--muted); }
+    .section-nav a:hover { color:var(--ink); text-decoration:underline; }
+    .section-nav span { font-family:var(--mono); font-size:10px; margin-right:6px; color:var(--teal); }
+    section { scroll-margin-top:20px; margin-bottom:40px; }
+    .section-head { display:flex; align-items:baseline; justify-content:space-between; gap:16px; margin-bottom:17px; }
+    .section-title { display:flex; align-items:baseline; gap:11px; }
+    .section-number { font-family:var(--mono); color:var(--teal); font-size:11px; }
+    h2 { margin:0; font-size:20px; line-height:1.3; letter-spacing:-.5px; }
+    h3 { margin:0; font-size:15px; line-height:1.4; }
+    .section-meta { font-size:11px; color:var(--muted); }
+    .impact { display:grid; grid-template-columns:1.65fr 1fr; background:var(--navy); color:#fffefa; border-radius:12px; overflow:hidden; }
+    .flow { padding:30px 34px; }
+    .flow-top { color:#b7c9c9; font-size:10px; }
+    .flow-values { display:grid; grid-template-columns:minmax(0,1fr) 54px minmax(0,1fr); align-items:center; gap:15px; margin-top:21px; }
+    .flow-value { font-family:var(--mono); font-size:clamp(34px,4.2vw,58px); line-height:1.15; letter-spacing:-2.5px; overflow-wrap:anywhere; }
+    .flow-value.output { color:#f5ba8d; }
+    .flow-label { margin-top:7px; font-size:11px; color:#c5d2d2; }
+    .flow-arrow { font-size:36px; font-weight:300; color:#96aeae; align-self:start; line-height:1.6; text-align:center; }
+    .row-marks { display:flex; gap:4px; margin-top:18px; height:8px; }
+    .row-marks i { height:8px; width:16px; border-radius:1px; background:#688384; }
+    .row-marks.output i { background:#df9b6d; }
+    .flow-note { margin:22px 0 0; padding-top:17px; border-top:1px solid #345059; font-size:11px; color:#c5d2d2; }
+    .impact-facts { padding:30px; background:#1a3842; border-left:1px solid #345059; display:flex; flex-direction:column; justify-content:center; gap:20px; }
+    .impact-fact { display:flex; justify-content:space-between; align-items:baseline; gap:18px; font-size:12px; color:#d1dddd; }
+    .impact-fact strong { font-family:var(--mono); font-size:22px; color:#fffefa; font-weight:400; text-align:right; overflow-wrap:anywhere; }
+    .side-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px; }
+    .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:23px 25px; min-width:0; }
+    .card-title { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:16px; }
+    .side-letter { display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; border:1px solid var(--line); border-radius:4px; font-family:var(--mono); font-size:11px; color:var(--muted); }
+    .unmatched { display:flex; align-items:baseline; gap:11px; margin-bottom:15px; }
+    .unmatched strong { font-family:var(--mono); font-size:31px; font-weight:500; line-height:1; }
+    .unmatched span { font-size:11px; color:var(--muted); }
+    dl { margin:0; }
+    .metrics { display:grid; grid-template-columns:1fr 1fr; gap:13px 18px; padding-top:16px; border-top:1px solid var(--line); }
+    .metrics dt { font-size:10px; color:var(--muted); margin-bottom:4px; }
+    .metrics dd { font-family:var(--mono); margin:0; font-size:14px; }
+    .small-note { margin:15px 0 0; font-size:11px; color:var(--muted); line-height:1.65; }
+    .relationship { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:20px; }
+    .relationship dt { color:var(--muted); font-size:11px; margin-bottom:7px; }
+    .relationship dd { margin:0; font-family:var(--mono); font-size:17px; overflow-wrap:anywhere; }
+    .rules { list-style:none; margin:0; padding:0; border-top:1px solid var(--line); }
+    .rules li { display:grid; grid-template-columns:62px 1fr; gap:16px; padding:15px 0; border-bottom:1px solid var(--line); }
+    .rules li:last-child { border-bottom:0; padding-bottom:0; }
+    .rule-state { align-self:start; text-align:center; border-radius:4px; padding:3px 6px; text-transform:uppercase; font-family:var(--mono); font-size:10px; letter-spacing:.7px; }
+    .rule-state.pass { background:var(--teal-soft); color:var(--teal); }
+    .rule-state.fail { background:var(--orange-soft); color:var(--orange); }
+    .rule-message { font-size:13px; overflow-wrap:anywhere; }
+    .rule-code { display:block; margin-top:3px; font-family:var(--mono); font-size:10px; color:var(--muted); }
+    .table-card { padding:0; overflow:hidden; }
+    .table-intro { padding:20px 25px 0; margin:0; font-size:12px; color:var(--muted); }
+    .table-scroll { overflow-x:auto; padding:0 25px 6px; }
+    table { width:100%; border-collapse:collapse; text-align:left; }
+    caption { text-align:left; font-size:11px; color:var(--muted); padding:15px 0 10px; }
+    th { padding:12px 12px; font-size:10px; font-weight:600; color:var(--muted); border-bottom:1px solid var(--line); vertical-align:bottom; }
+    td { padding:15px 12px; font-size:12px; border-bottom:1px solid #e7e9e2; }
+    th:first-child,td:first-child { padding-left:0; }
+    th:last-child,td:last-child { padding-right:0; }
+    tbody tr:last-child td { border-bottom:0; }
+    .number { text-align:right; font-family:var(--mono); white-space:nowrap; }
+    .extra { color:var(--orange); font-weight:600; }
+    .key { display:block; font-family:var(--mono); font-size:11px; color:var(--muted); overflow-wrap:anywhere; max-width:250px; margin-top:5px; }
+    .empty { padding:27px 25px; }
+    .empty strong { display:block; font-size:14px; font-weight:600; }
+    .empty p { color:var(--muted); font-size:12px; margin:7px 0 0; }
+    .money-head { display:grid; grid-template-columns:1fr 1fr; gap:24px; padding-bottom:22px; border-bottom:1px solid var(--line); }
+    .money-label { color:var(--muted); font-size:11px; margin-bottom:8px; }
+    .amount { font-family:var(--mono); font-size:clamp(18px,2.2vw,28px); line-height:1.35; letter-spacing:-.8px; overflow-wrap:anywhere; }
+    .money-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px 24px; padding-top:22px; }
+    .money-grid dt { font-size:11px; color:var(--muted); margin-bottom:5px; }
+    .money-grid dd { font-family:var(--mono); font-size:16px; margin:0; overflow-wrap:anywhere; }
+    .money-grid .absolute { color:var(--orange); }
+    .notice { display:flex; gap:12px; padding:14px 17px; margin-top:22px; border-radius:5px; color:#773c21; background:var(--orange-soft); font-size:12px; line-height:1.65; }
+    .notice strong { font-weight:650; }
+    .notice p { margin:0; }
+    .notice-symbol { font-family:var(--mono); font-weight:700; flex-shrink:0; }
+    .method-grid { display:grid; grid-template-columns:1fr 1fr; gap:30px; }
+    .method-list { margin:13px 0 0; padding-left:16px; color:var(--muted); font-size:12px; line-height:1.8; }
+    .method-list li { padding:0 0 7px 4px; overflow-wrap:anywhere; }
+    .samples-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:20px; }
+    .samples-grid h3 { font-size:12px; }
+    .samples-grid ul { font-family:var(--mono); font-size:11px; padding-left:17px; overflow-wrap:anywhere; }
+    .footnote { margin:20px 0 0; padding-top:16px; border-top:1px solid var(--line); font-size:11px; color:var(--muted); }
+    footer { display:flex; align-items:center; justify-content:space-between; gap:20px; border-top:1px solid var(--line); padding:23px 0 36px; font-size:10px; color:var(--muted); }
+    footer strong { color:var(--ink); font-size:11px; font-weight:600; }
+    .footer-right { text-align:right; font-family:var(--mono); font-size:9px; }
+    @media (max-width:800px) {
+      .shell { width:calc(100% - 40px); }
+      .hero { gap:30px; padding:42px 0 34px; }
+      h1 { font-size:50px; }
+      .masthead-right .micro { display:none; }
+      .impact { grid-template-columns:1.3fr 1fr; }
+      .flow { padding:26px; }
+      .flow-values { gap:9px; grid-template-columns:minmax(0,1fr) 35px minmax(0,1fr); }
+      .impact-facts { padding:26px 22px; }
+    }
+    @media (max-width:600px) {
+      .shell { width:calc(100% - 32px); }
+      .masthead { padding:19px 0; gap:10px; }
+      .brand { font-size:17px; }
+      .badge { font-size:9px; padding:5px 8px; }
+      .hero { grid-template-columns:1fr; gap:25px; padding-top:38px; }
+      h1 { font-size:52px; letter-spacing:-2px; }
+      .hero-copy { margin:16px 0 18px; font-size:14px; }
+      .verdict { padding:21px; }
+      .verdict h2 { font-size:23px; }
+      .section-nav { gap:12px 21px; margin-bottom:28px; }
+      .section-head { flex-wrap:wrap; gap:7px; }
+      .section-meta { padding-left:25px; }
+      .impact { grid-template-columns:1fr; }
+      .flow { padding:25px; }
+      .flow-values { gap:10px; grid-template-columns:minmax(0,1fr) 36px minmax(0,1fr); }
+      .flow-value { font-size:48px; }
+      .impact-facts { border-left:0; border-top:1px solid #345059; padding:20px 25px; gap:12px; }
+      .impact-fact strong { font-size:19px; }
+      .side-grid,.method-grid,.samples-grid { grid-template-columns:1fr; }
+      .side-grid { gap:12px; }
+      .card { padding:21px; }
+      .table-card { padding:0; }
+      .table-scroll { padding:0 21px 6px; }
+      .table-intro { padding:20px 21px 0; }
+      .relationship { gap:15px; }
+      .relationship dd { font-size:13px; }
+      .money-head,.money-grid { gap:18px; }
+      .money-head { grid-template-columns:1fr; }
+      .amount { font-size:25px; }
+      .money-grid dd { font-size:14px; }
+      .money-grid dt { font-size:10px; }
+      .rules li { gap:12px; }
+      .method-grid { gap:22px; }
+      section { margin-bottom:30px; }
+      footer { align-items:flex-start; }
+    }
+    @media print {
+      body { background:#fff; font-size:11px; }
+      .shell { width:100%; }
+      .skip,.section-nav { display:none; }
+      .hero { padding:20px 0; }
+      h1 { font-size:42px; }
+      .card,.impact,.verdict { break-inside:avoid; }
+      .impact { color:var(--ink); background:#f0f2ef; border:1px solid var(--line); }
+      .impact-facts { background:transparent; border-color:var(--line); }
+      .impact-fact,.impact-fact strong,.flow-value.output,.flow-top,.flow-label,.flow-note,.flow-arrow { color:var(--ink); }
+      section { margin-bottom:24px; }
+    }
+  </style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to report</a>
+<div class="shell">
+  <header class="masthead">
+    <div class="brand"><span class="brandmark" aria-hidden="true"><i></i><i></i></span>JoinWitness</div>
+    <div class="masthead-right">
+      <span class="micro quiet">CSV join preflight</span>
+      {% if audit.samples_included %}<span class="badge badge-samples"><span class="dot" aria-hidden="true"></span>Samples included</span>
+      {% else %}<span class="badge badge-private"><span class="dot" aria-hidden="true"></span>Private by default</span>{% endif %}
+    </div>
+  </header>
+  <main id="main">
+    <div class="hero">
+      <div>
+        <p class="eyebrow micro">Know the shape of your data</p>
+        <h1>Before you join.</h1>
+        <p class="hero-copy">See what your join will multiply, leave unmatched, and carry into your totals.</p>
+        <div class="config"><span>{{ audit.join_type }} join</span><span>{{ audit.key_columns }} key column{% if audit.key_columns != 1 %}s{% endif %}</span><span>Exact preflight</span></div>
+      </div>
+      <div class="verdict{% if audit.passed %} pass{% endif %}">
+        <div class="verdict-label"><span class="dot" aria-hidden="true"></span>Audit verdict</div>
+        <h2>{% if audit.passed %}All declared rules pass{% else %}Needs review{% endif %}</h2>
+        <p>{% if audit.passed %}This join meets the rules you selected. Review its shape and amount propagation before proceeding.{% else %}At least one declared rule did not pass. Review the findings before running this join.{% endif %}</p>
+        <div class="rule-count"><strong>{{ audit.rules | selectattr('passed') | list | length }} / {{ audit.rules | length }}</strong><span>declared rules passed</span></div>
+      </div>
+    </div>
+    <nav class="section-nav" aria-label="Report sections">
+      <a href="#row-impact"><span>01</span>Row impact</a>
+      <a href="#rules"><span>02</span>Declared rules</a>
+      <a href="#expansion"><span>03</span>Expansion</a>
+      <a href="#amounts"><span>04</span>Amounts</a>
+      <a href="#method"><span>05</span>Method &amp; privacy</a>
+    </nav>
+
+    <section id="row-impact" aria-labelledby="row-title">
+      <div class="section-head"><div class="section-title"><span class="section-number">01</span><h2 id="row-title">The shape of this join</h2></div><span class="section-meta">Computed from key counts. No joined output created.</span></div>
+      <div class="impact">
+        <div class="flow">
+          <div class="micro flow-top">Left input → predicted join output</div>
+          <div class="flow-values">
+            <div><div class="flow-value">{{ audit.left.rows | count }}</div><div class="flow-label">Input rows · left</div><div class="row-marks" aria-hidden="true">{% for _ in range([audit.left.rows, 8] | min) %}<i></i>{% endfor %}</div></div>
+            <div class="flow-arrow" aria-hidden="true">→</div>
+            <div><div class="flow-value output">{{ audit.predicted_rows | count }}</div><div class="flow-label">Predicted output</div><div class="row-marks output" aria-hidden="true">{% for _ in range([audit.predicted_rows, 8] | min) %}<i></i>{% endfor %}</div></div>
+          </div>
+          <p class="flow-note">{{ audit.right.rows | count }} right input rows · {{ audit.matched_output_rows | count }} matched output rows{% if audit.join_type == 'left' %} · {{ audit.left.unmatched_rows | count }} unmatched left rows retained{% else %} · {{ audit.left.unmatched_rows | count }} unmatched left rows dropped{% endif %}</p>
+        </div>
+        <div class="impact-facts">
+          <div class="impact-fact"><span>Additional left-row copies</span><strong>{{ audit.expansion_rows | count }}</strong></div>
+          <div class="impact-fact"><span>Left rows expanded</span><strong>{{ audit.expanded_left_rows | count }}</strong></div>
+          <div class="impact-fact"><span>Most right matches per left row</span><strong>{{ audit.max_right_matches | count }}</strong></div>
+        </div>
+      </div>
+      <div class="side-grid">
+        {% for label, side in [('Left', audit.left), ('Right', audit.right)] %}
+        <div class="card">
+          <div class="card-title"><h3>{{ label }} unmatched rows</h3><span class="side-letter" aria-hidden="true">{{ label[0] }}</span></div>
+          <div class="unmatched"><strong>{{ side.unmatched_rows | count }}</strong><span>of {{ side.rows | count }} input rows</span></div>
+          <dl class="metrics">
+            <div><dt>NULL-key rows</dt><dd>{{ side.null_key_rows | count }}</dd></div>
+            <div><dt>Unmatched non-NULL keys</dt><dd>{{ side.unmatched_keys | count }}</dd></div>
+            <div><dt>Distinct non-NULL keys</dt><dd>{{ side.distinct_matchable_keys | count }}</dd></div>
+            <div><dt>Duplicate non-NULL keys</dt><dd>{{ side.duplicate_keys | count }}</dd></div>
+          </dl>
+          <p class="small-note">NULL-key rows never match and are included in unmatched rows. Duplicate keys are counted across the full input.</p>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section id="rules" aria-labelledby="rules-title">
+      <div class="section-head"><div class="section-title"><span class="section-number">02</span><h2 id="rules-title">Your declared rules</h2></div><span class="section-meta">A verdict on these rules, not a guarantee about your data</span></div>
+      <div class="card">
+        <dl class="relationship"><div><dt>Expected relationship</dt><dd>{{ audit.expected_relationship }}</dd></div><div><dt>Observed relationship</dt><dd>{{ audit.observed_relationship }}</dd></div></dl>
+        <ul class="rules">
+          {% for rule in audit.rules %}<li><span class="rule-state {% if rule.passed %}pass{% else %}fail{% endif %}">{% if rule.passed %}Pass{% else %}Review{% endif %}</span><div class="rule-message">{{ rule.message }}<span class="rule-code">{{ rule.code }}</span></div></li>{% endfor %}
+        </ul>
+      </div>
+    </section>
+
+    <section id="expansion" aria-labelledby="expansion-title">
+      <div class="section-head"><div class="section-title"><span class="section-number">03</span><h2 id="expansion-title">Where rows multiply</h2></div><span class="section-meta">Aggregates{% if audit.samples_included %} + opted-in key samples{% else %} only · key values withheld{% endif %}</span></div>
+      <div class="card table-card">
+        {% if audit.expansions %}
+        <p class="table-intro">Each matching key group produces left rows × right rows. Additional copies count the output beyond one copy of each matched left row.</p>
+        <div class="table-scroll" tabindex="0" role="region" aria-label="Expansion group counts">
+          <table>
+            <caption>Expanding key groups · {{ audit.expansions | length }} shown</caption>
+            <thead><tr><th scope="col">Key group</th><th class="number" scope="col">Left rows</th><th class="number" scope="col">Right rows</th><th class="number" scope="col">Output rows</th><th class="number" scope="col">Extra copies</th></tr></thead>
+            <tbody>{% for group in audit.expansions %}<tr><td>{{ group.group }}{% if audit.samples_included and group.key %}<span class="key">{% for part in group.key %}{% if not loop.first %} · {% endif %}{{ part }}{% endfor %}</span>{% endif %}</td><td class="number">{{ group.left_rows | count }}</td><td class="number">{{ group.right_rows | count }}</td><td class="number">{{ group.output_rows | count }}</td><td class="number extra">+{{ group.extra_left_copies | count }}</td></tr>{% endfor %}</tbody>
+          </table>
+        </div>
+        {% else %}<div class="empty"><strong>No expanding key groups</strong><p>No matched left row has more than one right-side match.</p></div>{% endif %}
+      </div>
+    </section>
+
+    <section id="amounts" aria-labelledby="amounts-title">
+      <div class="section-head"><div class="section-title"><span class="section-number">04</span><h2 id="amounts-title">Follow the amount</h2></div><span class="section-meta">Left-side amounts · exact decimal arithmetic</span></div>
+      {% if audit.money %}
+      <div class="card">
+        <div class="money-head"><div><div class="money-label">Input amount total</div><div class="amount">{{ audit.money.input_total }}</div></div><div><div class="money-label">Predicted output amount total</div><div class="amount">{{ audit.money.output_total }}</div></div></div>
+        <dl class="money-grid">
+          <div><dt>Signed duplicated amount</dt><dd>{{ audit.money.duplicated_signed_amount }}</dd></div>
+          <div><dt>Absolute duplicated amount</dt><dd class="absolute">{{ audit.money.duplicated_absolute_amount }}</dd></div>
+          <div><dt>Matched input amount</dt><dd>{{ audit.money.matched_input_total }}</dd></div>
+          <div><dt>Unmatched input amount</dt><dd>{{ audit.money.unmatched_input_total }}</dd></div>
+          <div><dt>Dropped amount</dt><dd>{{ audit.money.dropped_amount }}</dd></div>
+          <div><dt>Net amount change</dt><dd>{{ audit.money.net_change }}</dd></div>
+          <div><dt>Left rows with duplicated amounts</dt><dd>{{ audit.money.duplicated_left_rows | count }}</dd></div>
+          <div><dt>Extra amount copies</dt><dd>{{ audit.money.extra_copies | count }}</dd></div>
+        </dl>
+        <div class="notice"><span class="notice-symbol" aria-hidden="true">!</span><p><strong>Cancellation can hide duplication.</strong> Positive and negative duplicated amounts can cancel in the signed total. The absolute duplicated amount sums the magnitude of every extra copy.</p></div>
+        <p class="small-note">Amounts retain the source units; no currency is inferred. Net change also reflects any unmatched amounts dropped by an inner join.</p>
+      </div>
+      {% else %}<div class="card empty"><strong>No amount column selected</strong><p>This report audits row counts and keys. Select a left-side amount column to measure exact amount propagation.</p></div>{% endif %}
+    </section>
+
+    <section id="method" aria-labelledby="method-title">
+      <div class="section-head"><div class="section-title"><span class="section-number">05</span><h2 id="method-title">Method &amp; privacy</h2></div><span class="section-meta">Local computation. Portable evidence.</span></div>
+      <div class="card">
+        <div class="method-grid">
+          <div><h3>Read the result with these assumptions</h3><ul class="method-list"><li>Keys use exact strings. No trimming, type coercion, fuzzy matching, or deduplication is applied.</li><li>SQL NULL behavior: a NULL in any key component prevents a match, even against another NULL.</li><li>Relationship checks cover all non-NULL keys in both inputs, including keys without a match.</li><li>Predictions are calculated from key frequencies. The actual joined dataset is never materialized.</li>{% for note in audit.notes %}<li>{{ note }}</li>{% endfor %}</ul></div>
+          <div><h3>{% if audit.samples_included %}Review before you share{% else %}Private by default{% endif %}</h3><ul class="method-list"><li>This self-contained report works offline. It contains no scripts, external fonts, trackers, or remote resources.</li><li>Source paths, column names, full input rows, and key hashes are not included.</li>{% if audit.samples_included %}<li><strong>Key samples were explicitly enabled.</strong> They may contain personal or confidential values. Review this report before you share it.</li>{% else %}<li>Key values and unmatched-key samples are withheld. Expansion groups use anonymous labels.</li>{% endif %}<li>Aggregate counts and selected amount totals may still be sensitive. Share only with an appropriate audience.</li></ul></div>
+        </div>
+        {% if audit.samples_included %}
+        <div class="samples-grid">
+          <div><h3>Unmatched left key samples</h3><ul>{% for key in audit.unmatched_left_samples %}<li>{% for part in key %}{% if not loop.first %} · {% endif %}{{ part }}{% endfor %}</li>{% else %}<li>No samples included.</li>{% endfor %}</ul></div>
+          <div><h3>Unmatched right key samples</h3><ul>{% for key in audit.unmatched_right_samples %}<li>{% for part in key %}{% if not loop.first %} · {% endif %}{{ part }}{% endfor %}</li>{% else %}<li>No samples included.</li>{% endfor %}</ul></div>
+        </div>
+        {% endif %}
+        <p class="footnote">A preflight describes the configured join and rules. It cannot establish whether the selected keys, input data, or business assumptions are correct.</p>
+      </div>
+    </section>
+  </main>
+  <footer><div><strong>JoinWitness</strong><br>Understand the join before the join.</div><div class="footer-right">v{{ audit.tool_version }} · schema {{ audit.schema_version }}<br>OFFLINE REPORT · EXACT COUNTS</div></footer>
+</div>
+</body>
+</html>

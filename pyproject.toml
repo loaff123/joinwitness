@@ -1,0 +1,61 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "joinwitness"
+version = "0.1.0"
+description = "See CSV join cardinality and monetary duplication before running the join."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.10"
+authors = [{name = "JoinWitness contributors"}]
+dependencies = ["Jinja2>=3.1.6,<4"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Environment :: Console",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Scientific/Engineering :: Information Analysis",
+]
+
+[project.urls]
+Homepage = "https://github.com/loaff123/joinwitness"
+Repository = "https://github.com/loaff123/joinwitness"
+Issues = "https://github.com/loaff123/joinwitness/issues"
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<10", "hypothesis>=6.100,<7", "build>=1.2,<2", "ruff>=0.11,<1", "mypy>=1.15,<3"]
+
+[project.scripts]
+joinwitness = "joinwitness.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/joinwitness"]
+
+[tool.hatch.build.targets.sdist]
+include = ["/src", "/tests", "/docs", "/examples", "/benchmarks", "/.github", "/README.md", "/CONTRIBUTING.md", "/SECURITY.md", "/CHANGELOG.md", "/LICENSE", "/pyproject.toml", "/.gitignore"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-ra"
+
+[tool.ruff]
+line-length = 100
+
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+files = ["src/joinwitness"]

@@ -1,0 +1,84 @@
+{
+  "expanded_left_rows": 3,
+  "expansion_rows": 4,
+  "expansions": [
+    {
+      "extra_left_copies": 2,
+      "group": "Group 1",
+      "left_rows": 1,
+      "output_rows": 3,
+      "right_rows": 3
+    },
+    {
+      "extra_left_copies": 1,
+      "group": "Group 2",
+      "left_rows": 1,
+      "output_rows": 2,
+      "right_rows": 2
+    },
+    {
+      "extra_left_copies": 1,
+      "group": "Group 3",
+      "left_rows": 1,
+      "output_rows": 2,
+      "right_rows": 2
+    }
+  ],
+  "expected_relationship": "many-to-one",
+  "join_type": "left",
+  "key_columns": 1,
+  "left": {
+    "distinct_matchable_keys": 4,
+    "duplicate_excess_rows": 0,
+    "duplicate_keys": 0,
+    "matchable_rows": 4,
+    "null_key_rows": 0,
+    "rows": 4,
+    "unmatched_keys": 1,
+    "unmatched_rows": 1
+  },
+  "matched_output_rows": 7,
+  "max_right_matches": 3,
+  "money": {
+    "dropped_amount": "0",
+    "duplicated_absolute_amount": "320",
+    "duplicated_left_rows": 3,
+    "duplicated_signed_amount": "260",
+    "extra_copies": 4,
+    "input_total": "250",
+    "matched_input_total": "160",
+    "net_change": "260",
+    "output_total": "510",
+    "unmatched_input_total": "90"
+  },
+  "notes": [
+    "Keys are exact strings; there is no trimming, coercion, or deduplication.",
+    "Any configured NULL key component prevents a match; NULL-key rows count as unmatched rows, not distinct keys.",
+    "Relationship uniqueness is checked over every non-NULL key, including unmatched keys.",
+    "Expansion counts extra copies of left rows; only the ten largest expansion groups are shown.",
+    "Monetary values, when selected, are validated on every left row and summed exactly without rounding."
+  ],
+  "observed_relationship": "one-to-many",
+  "passed": false,
+  "predicted_rows": 8,
+  "right": {
+    "distinct_matchable_keys": 4,
+    "duplicate_excess_rows": 4,
+    "duplicate_keys": 3,
+    "matchable_rows": 8,
+    "null_key_rows": 0,
+    "rows": 8,
+    "unmatched_keys": 1,
+    "unmatched_rows": 1
+  },
+  "rules": [
+    {
+      "code": "relationship",
+      "message": "Declared uniqueness requirements are violated by non-NULL keys.",
+      "passed": false
+    }
+  ],
+  "samples_included": false,
+  "schema_version": "1.0",
+  "tool_version": "0.1.0"
+}
